@@ -1,82 +1,78 @@
-﻿#include <iostream>
-#include <map>
-#include <string>
-#include <windows.h>
+﻿// YPMT1.cpp
+#include <iostream>
+#include "tables.h"
+#include "scanner.h"
 
 using namespace std;
 
-// Ключевые слова
-map<string, int> keywords;
-
-void initKeywords() {
-    keywords["do"] = 1;
-    keywords["while"] = 2;
-    keywords["print"] = 3;
-}
-
-int find_word(const string& word) {
-    auto it = keywords.find(word);
-    return (it != keywords.end()) ? it->second : 0;
-}
-
-// Идентификаторы
-map<string, int> identifiers;
-int nextId = 1;
-
-int make_id(const string& name) {
-    if (identifiers.find(name) != identifiers.end()) {
-        return identifiers[name];
-    }
-    identifiers[name] = nextId;
-    return nextId++;
-}
-
-// Константы
-map<int, int> constToCode;
-map<int, int> codeToConst;
-int nextConstCode = 1;
-
-int make_dig(int value) {
-    if (constToCode.find(value) != constToCode.end()) {
-        return constToCode[value];
-    }
-    constToCode[value] = nextConstCode;
-    codeToConst[nextConstCode] = value;
-    return nextConstCode++;
-}
-
-int val_dig(int code) {
-    return (codeToConst.find(code) != codeToConst.end()) ? codeToConst[code] : -1;
-}
-
 int main() {
-    SetConsoleOutputCP(1251);
+    // No need for SetConsoleOutputCP with English text
     initKeywords();
-    cout << "Лаба 1" << endl;
-    cout << "Информационные таблицы" << endl;
-    cout << "Вариант: S -> do S{;S} while B | id = E | print id" << endl;
+
+    cout << "=== LABORATORY WORK 1 and 2 ===" << endl;
+    cout << "1. Information tables" << endl;
+    cout << "2. Lexical analyzer (scanner)" << endl;
+    cout << "==================================" << endl;
+    cout << "Language: S -> do S{;S} while B | id = E | print id" << endl;
     cout << endl;
 
-    // Тестируем
-    cout << "1. Таблица ключевых слов:" << endl;
-    cout << "   find_word('do') = " << find_word("do") << endl;
-    cout << "   find_word('while') = " << find_word("while") << endl;
-    cout << "   find_word('print') = " << find_word("print") << endl;
-    cout << "   find_word('if') = " << find_word("if") << " (не ключевое слово)" << endl;
+    // Part 1: Demonstration of tables (Lab 1)
+    cout << "=== PART 1: INFORMATION TABLES ===" << endl;
+    cout << "1. Keywords table:" << endl;
+    cout << "   find_word(\"do\") = " << find_word("do") << endl;
+    cout << "   find_word(\"while\") = " << find_word("while") << endl;
+    cout << "   find_word(\"print\") = " << find_word("print") << endl;
+    cout << "   find_word(\"if\") = " << find_word("if") << " (not a keyword)" << endl;
     cout << endl;
 
-    cout << "2. Таблица идентификаторов:" << endl;
-    cout << "   make_id('x') = " << make_id("x") << endl;
-    cout << "   make_id('y') = " << make_id("y") << endl;
-    cout << "   make_id('x') = " << make_id("x") << " (второй раз)" << endl;
+    cout << "2. Identifiers table:" << endl;
+    cout << "   make_id(\"x\") = " << make_id("x") << endl;
+    cout << "   make_id(\"y\") = " << make_id("y") << endl;
+    cout << "   make_id(\"x\") = " << make_id("x") << " (again)" << endl;
     cout << endl;
 
-    cout << "3. Таблица констант:" << endl;
+    cout << "3. Constants table:" << endl;
     cout << "   make_dig(10) = " << make_dig(10) << endl;
     cout << "   make_dig(255) = " << make_dig(255) << endl;
-    cout << "   make_dig(10) = " << make_dig(10) << " (второй раз)" << endl;
+    cout << "   make_dig(10) = " << make_dig(10) << " (again)" << endl;
     cout << "   val_dig(1) = " << val_dig(1) << endl;
     cout << "   val_dig(2) = " << val_dig(2) << endl;
+    cout << endl;
 
+    // Part 2: Demonstration of scanner (Lab 2)
+    cout << "=== PART 2: LEXICAL ANALYZER ===" << endl;
+
+    // Example 1: Simple program
+    string program1 = "do x = 10; print x while x < 20#";
+    cout << "\nExample 1: \"" << program1 << "\"" << endl;
+    vector<Token> tokens1 = scanner(program1);
+    cout << "Token vector: ";
+    print_tokens(tokens1);
+    demonstrate_token_correspondence(program1, tokens1);
+
+    // Example 2: Program with all token types
+    string program2 = "do x = x + 5; y = 100; print y while y > 0#";
+    cout << "\nExample 2 (all token types): \"" << program2 << "\"" << endl;
+    vector<Token> tokens2 = scanner(program2);
+    cout << "Token vector: ";
+    print_tokens(tokens2);
+    demonstrate_token_correspondence(program2, tokens2);
+
+    // State diagram (homework)
+    print_state_diagram();
+
+    // Display table contents
+    cout << "\n=== TABLE CONTENTS ===" << endl;
+    cout << "\nIdentifiers table:" << endl;
+    for (const auto& id : identifiers) {
+        cout << "  " << id.first << " -> code " << id.second << endl;
+    }
+
+    cout << "\nConstants table:" << endl;
+    for (const auto& cnst : codeToConst) {
+        cout << "  code " << cnst.first << " -> value " << cnst.second << endl;
+    }
+
+    system("pause");
     return 0;
 }

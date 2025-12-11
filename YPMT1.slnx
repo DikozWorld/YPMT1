@@ -3,5 +3,5 @@
     <Platform Name="x64" />
     <Platform Name="x86" />
   </Configurations>
-  <Project Path="YPMT1/YPMT1.vcxproj" />
+  <Project Path="YPMT1/YPMT1.vcxproj" Id="704de43d-30d6-4669-8d12-f5bd07ac3420" />
 </Solution>
