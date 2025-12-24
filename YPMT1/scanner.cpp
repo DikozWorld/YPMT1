@@ -1,4 +1,3 @@
-// scanner.cpp
 #include "scanner.h"
 #include "tables.h"
 #include <iostream>
@@ -7,13 +6,11 @@
 
 using namespace std;
 
-// Operators table (only for this file)
 map<char, int> operators = {
     {'=', 4}, {'<', 5}, {'>', 6},
     {'+', 7}, {'-', 8}, {';', 9}
 };
 
-// Main scanner function
 vector<Token> scanner(const string& input) {
     vector<Token> tokens;
     int i = 0;
@@ -22,19 +19,16 @@ vector<Token> scanner(const string& input) {
     while (i < n) {
         char c = input[i];
 
-        // Skip whitespace
         if (isspace(c)) {
             i++;
             continue;
         }
 
-        // End of program
         if (c == '#') {
             tokens.push_back({ TOKEN_END, 0 });
             break;
         }
 
-        // Identifiers or keywords
         if (isalpha(c)) {
             string ident;
             while (i < n && (isalnum(input[i]))) {
@@ -53,7 +47,6 @@ vector<Token> scanner(const string& input) {
             continue;
         }
 
-        // Numbers
         if (isdigit(c)) {
             string num_str;
             while (i < n && isdigit(input[i])) {
@@ -66,7 +59,6 @@ vector<Token> scanner(const string& input) {
             continue;
         }
 
-        // Operators and separators
         auto op_it = operators.find(c);
         if (op_it != operators.end()) {
             tokens.push_back({ TOKEN_WORD, op_it->second });
@@ -74,7 +66,6 @@ vector<Token> scanner(const string& input) {
             continue;
         }
 
-        // Unknown character
         cout << "Error: unknown character '" << c << "'" << endl;
         i++;
     }
@@ -82,7 +73,6 @@ vector<Token> scanner(const string& input) {
     return tokens;
 }
 
-// Print tokens in format (TYPE,CODE)
 void print_tokens(const vector<Token>& tokens) {
     for (const auto& token : tokens) {
         switch (token.type) {
@@ -103,10 +93,8 @@ void print_tokens(const vector<Token>& tokens) {
     cout << endl;
 }
 
-// Demonstrate token correspondence to source code
 void demonstrate_token_correspondence(const string& input, const vector<Token>& tokens) {
     cout << "\nToken to source code correspondence:" << endl;
-    cout << "======================================" << endl;
 
     vector<string> token_strings;
     int i = 0;
@@ -165,44 +153,4 @@ void demonstrate_token_correspondence(const string& input, const vector<Token>& 
 
         cout << token_strings[j] << " \t-> (" << token_type << "," << tokens[j].code << ")" << endl;
     }
-}
-
-// State diagram of the scanner (homework)
-void print_state_diagram() {
-    cout << "\n=== SCANNER STATE DIAGRAM ===" << endl;
-    cout << "                                    " << endl;
-    cout << "        [START]                    " << endl;
-    cout << "           |                         " << endl;
-    cout << "           v                         " << endl;
-    cout << "       +-------+                     " << endl;
-    cout << "       |SPACE  |----> Skip          " << endl;
-    cout << "       +-------+                     " << endl;
-    cout << "           |                         " << endl;
-    cout << "     +-----+-----+                   " << endl;
-    cout << "     |           |                   " << endl;
-    cout << "     v           v                   " << endl;
-    cout << "+-------+   +-------+               " << endl;
-    cout << "| LETTER|   |DIGIT  |               " << endl;
-    cout << "+-------+   +-------+               " << endl;
-    cout << "     |           |                   " << endl;
-    cout << "     v           v                   " << endl;
-    cout << "+---------------+   +-------------+ " << endl;
-    cout << "| Read letters  |   |Read digits  | " << endl;
-    cout << "| and digits    |   |             | " << endl;
-    cout << "+---------------+   +-------------+ " << endl;
-    cout << "     |                   |           " << endl;
-    cout << "     v                   v           " << endl;
-    cout << "+---------------+   +-------------+ " << endl;
-    cout << "| Identifier    |   | Number      | " << endl;
-    cout << "| or keyword    |   | (DIG)       | " << endl;
-    cout << "+---------------+   +-------------+ " << endl;
-    cout << "                                    " << endl;
-    cout << "  +--------------------------------+ " << endl;
-    cout << "  |  Operators: =, <, >, +, -, ;   | " << endl;
-    cout << "  |  -> immediate token (WORD,code)| " << endl;
-    cout << "  +--------------------------------+ " << endl;
-    cout << "                                    " << endl;
-    cout << "           +-------+                " << endl;
-    cout << "           |   #   |---> (END,0)   " << endl;
-    cout << "           +-------+                " << endl;
 }
